@@ -1,4 +1,4 @@
-﻿#ifndef LUNARCALENDARWIDGET_H
+#ifndef LUNARCALENDARWIDGET_H
 #define LUNARCALENDARWIDGET_H
 
 /**
@@ -140,8 +140,8 @@ private slots:
     void initWidget();
     void initStyle();
     void initDate();
-    void yearChanged(const QString &arg1);
-    void monthChanged(const QString &arg1);
+    void yearChanged(const int index);
+    void monthChanged(const int index);
     void clicked(const QDate &date, const LunarCalendarItem::DayType &dayType);
     void dayChanged(const QDate &date);
     void dateChanged(int year, int month, int day);
@@ -258,6 +258,7 @@ Q_SIGNALS:
     void clicked(const QDate &date);
     void selectionChanged();
     void signalCurrData(QString);
+
 };
 
 #endif // LUNARCALENDARWIDGET_H
