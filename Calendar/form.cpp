@@ -25,7 +25,7 @@ Form::Form(QWidget *parent)
     ui->endTimeEdit->setEnabled(false);
 
     // 连接checkBox的stateChanged信号到槽函数
-    connect(ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(onCheckBoxStateChanged(int)));
+    connect(ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(on_checkBox_stateChanged(int)));
 
 }
 
