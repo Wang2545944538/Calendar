@@ -1,6 +1,8 @@
-#pragma execution_character_set("utf-8")
+﻿#pragma execution_character_set("utf-8")
 
 #include "lunarcalendarwidget.h"
+#include"to_do_list.h"
+
 #include "qfontdatabase.h"
 #include "qdatetime.h"
 #include "qlayout.h"
@@ -20,7 +22,7 @@ LunarCalendarWidget::LunarCalendarWidget(QWidget *parent) : QWidget(parent)
     //判断图形字体是否存在,不存在则加入
     QFontDatabase fontDb;
     if (!fontDb.families().contains("FontAwesome")) {
-        int fontId = fontDb.addApplicationFont(":/Font/fontawesome-webfont.ttf");
+        int fontId = fontDb.addApplicationFont(":/resources/font/fontawesome-webfont.ttf");
         QStringList fontName = fontDb.applicationFontFamilies(fontId);
         if (fontName.count() == 0) {
             qDebug() << "load fontawesome-webfont.ttf error";
@@ -45,7 +47,7 @@ LunarCalendarWidget::LunarCalendarWidget(QWidget *parent) : QWidget(parent)
     weekBgColor = QColor(22, 160, 134);
 
     showLunar = true;
-    bgImage = ":/image/bg_calendar.png";
+    bgImage = ":/resources/image/bg_calendar.png";
     selectType = SelectType_Rect;
 
     borderColor = QColor(180, 180, 180);
@@ -131,6 +133,12 @@ void LunarCalendarWidget::initWidget()
     btnEvent->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     btnEvent->setText("新建日程");
 
+    //所有日程
+    QPushButton *btnAllEvents = new QPushButton;
+    btnAllEvents->setObjectName("btnAllEvents");
+    btnAllEvents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    btnAllEvents->setText("所有日程");
+
 //    //上午
 //    QRadioButton *AM_RadioButton = new QRadioButton;
 //    AM_RadioButton->setText("上午");
@@ -178,6 +186,7 @@ void LunarCalendarWidget::initWidget()
 //    layoutTop->addWidget(PM_RadioButton);
     layoutTop->addWidget(btnToday);
     layoutTop->addWidget(btnEvent);
+    layoutTop->addWidget(btnAllEvents);
 
     //星期widget
     QWidget *widgetWeek = new QWidget;
@@ -233,6 +242,7 @@ void LunarCalendarWidget::initWidget()
     connect(cboxYear, SIGNAL(currentIndexChanged(int)), this, SLOT(yearChanged(int)));
     connect(cboxMonth, SIGNAL(currentIndexChanged(int)), this, SLOT(monthChanged(int)));
     connect(btnEvent, SIGNAL(clicked(bool)), this, SLOT(newEvent()));
+    connect(btnAllEvents, SIGNAL(clicked(bool)), this, SLOT(showAllEvents()));
 }
 
 void LunarCalendarWidget::initStyle()
@@ -415,6 +425,14 @@ void LunarCalendarWidget::clicked(const QDate &date, const LunarCalendarItem::Da
         this->date = date;
         dayChanged(this->date);
     }
+
+    if(storage.hasEventOnDate(date))
+    {
+        To_do_list *todo_list = new To_do_list();
+        todo_list->show();
+        //todo_list->showAllEvents();
+        todo_list->showEventsOnDate(date);
+    }
 }
 
 void LunarCalendarWidget::dayChanged(const QDate &date)
@@ -573,7 +591,7 @@ QColor LunarCalendarWidget::getHoverBgColor() const
 
 QSize LunarCalendarWidget::sizeHint() const
 {
-    return QSize(600, 500);
+    return QSize(900, 800);
 }
 
 QSize LunarCalendarWidget::minimumSizeHint() const
@@ -666,6 +684,13 @@ void LunarCalendarWidget::newEvent()
 {
     Form *form=new Form();
     form->show();
+}
+
+void LunarCalendarWidget::showAllEvents()
+{
+    To_do_list *todo_list=new To_do_list();
+    todo_list->show();
+    todo_list->showAllEvents();
 }
 
 /**

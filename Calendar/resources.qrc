@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/font/fontawesome-webfont.ttf</file>
+        <file>resources/image/bg_calendar.png</file>
+    </qresource>
+</RCC>

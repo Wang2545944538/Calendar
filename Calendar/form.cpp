@@ -2,6 +2,8 @@
 #include "ui_form.h"
 #include"lunarcalendarwidget.h"
 
+#include<QCloseEvent>
+
 Form::Form(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Form)
@@ -49,6 +51,9 @@ void Form::on_checkBox_stateChanged(int state)
 
 void Form::on_save_clicked()
 {
+    // 设置标志位为真，表示由保存按钮触发了关闭操作
+    closedBySaveButton = true;
+
     // 从各个 UI 控件中获取数据
     QString name = ui->name->text(); // 从 QLineEdit 中读取事件名称
     QString location = ui->location->text(); // 从 QLineEdit 中读取地点
@@ -79,8 +84,7 @@ void Form::on_save_clicked()
     // 创建一个 TodoEvent 对象
     TodoEvent event(name, startTime, endTime, location, details ,priority);
 
-    // 将事件存储到数据库中
-    SQLiteStorage storage;
+    // 将事件存储到数据库中 
     int id = storage.addEvent(event);
     if (id != -1) {
         qDebug() << "Event added to database with ID:" << id;
@@ -93,4 +97,63 @@ void Form::on_save_clicked()
     lunarCalendarWidget.updateCalendarEvents();
 
     this->close();
+}
+
+void Form::closeEvent(QCloseEvent *event) {
+    // 从各个 UI 控件中获取数据
+    QString name = ui->name->text(); // 从 QLineEdit 中读取事件名称
+
+    // 如果名称不为空，且用户未点击保存按钮，则弹出保存提示框
+    if (!name.isEmpty()&& !closedBySaveButton) {
+        QMessageBox::StandardButton resBtn = QMessageBox::question(this, tr("保存事件"),
+                                                                   tr("是否保存当前事件？"),
+                                                                   QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+                                                                   QMessageBox::Yes);
+        if (resBtn == QMessageBox::Yes) {
+            // 如果用户选择保存，则执行保存操作
+            on_save_clicked();
+        } else if (resBtn == QMessageBox::No) {
+            // 如果用户选择不保存，则关闭窗口
+            event->accept();
+        } else {
+            // 如果用户取消关闭操作，则忽略关闭事件
+            event->ignore();
+        }
+    } else {
+        // 如果名称为空，直接关闭窗口
+        event->accept();
+    }
+}
+
+void Form::populateEventDetails(const TodoEvent &event)
+{
+    // 将事件的各个属性填充到表单中的对应控件中
+    ui->name->setText(event.name);
+    ui->location->setText(event.location);
+    ui->event->setText(event.details);
+
+    // 设置开始时间和结束时间
+    ui->SdateEdit->setDateTime(event.startTime);
+    ui->EdateEdit->setDateTime(event.endTime);
+
+    // 设置优先级
+    int index = ui->comboBox->findText(event.priority);
+    if (index != -1) {
+        ui->comboBox->setCurrentIndex(index);
+    }
+
+    // 检查是否需要启用时间编辑控件
+    if (event.startTime.time() == QTime(0, 0) && event.endTime.time() == QTime(0, 0)) {
+        // 如果开始时间和结束时间的时间部分都是0:0，则说明这个事件是全天事件，勾选全天事件的复选框
+        ui->checkBox->setChecked(true);
+        ui->startTimeEdit->setEnabled(false);
+        ui->endTimeEdit->setEnabled(false);
+    } else {
+        // 否则，根据事件的具体时间情况来设置时间编辑控件的值和是否启用
+        ui->checkBox->setChecked(false);
+        ui->startTimeEdit->setEnabled(true);
+        ui->endTimeEdit->setEnabled(true);
+        ui->startTimeEdit->setTime(event.startTime.time());
+        ui->endTimeEdit->setTime(event.endTime.time());
+    }
 }

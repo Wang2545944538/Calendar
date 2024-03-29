@@ -15,7 +15,8 @@ SOURCES += \
     lunarcalendaritem.cpp \
     lunarcalendarwidget.cpp \
     main.cpp \
-    sqlitestorage.cpp
+    sqlitestorage.cpp \
+    to_do_list.cpp
 
 HEADERS += \
     form.h \
@@ -23,10 +24,12 @@ HEADERS += \
     lunarcalendaritem.h \
     lunarcalendarwidget.h \
     sqlitestorage.h \
+    to_do_list.h \
     todoevent.h
 
 FORMS += \
-    form.ui
+    form.ui \
+    to_do_list.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -34,4 +37,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    Font.qrc
+    resources.qrc

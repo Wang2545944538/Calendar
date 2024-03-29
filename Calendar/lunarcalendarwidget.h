@@ -1,4 +1,4 @@
-#ifndef LUNARCALENDARWIDGET_H
+﻿#ifndef LUNARCALENDARWIDGET_H
 #define LUNARCALENDARWIDGET_H
 
 /**
@@ -96,6 +96,14 @@ public:
     explicit LunarCalendarWidget(QWidget *parent = 0);
     ~LunarCalendarWidget();
 
+    // 获取 SQLiteStorage 单例实例
+    SQLiteStorage& getSQLiteStorageInstance() {
+        return SQLiteStorage::getInstance();
+    }
+
+    // 获取 SQLiteStorage 单例实例
+    SQLiteStorage& storage = getSQLiteStorageInstance();
+
 private:
     QFont iconFont;                     //图形字体
     bool btnClick;                      //按钮单击,避开下拉选择重复触发
@@ -135,7 +143,6 @@ private:
     QColor otherBgColor;                //其他月背景颜色
     QColor selectBgColor;               //选中日期背景颜色
     QColor hoverBgColor;                //悬停日期背景颜色
-
 private slots:
     void initWidget();
     void initStyle();
@@ -196,6 +203,8 @@ public Q_SLOTS:
     void showToday();
     //新建日程
     void newEvent();
+    //所有日程
+    void showAllEvents();
     //获取当前选择日期
     void retCurrData();
 

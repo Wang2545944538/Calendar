@@ -120,7 +120,13 @@ private:
     QColor selectBgColor;           //选中日期背景颜色
     QColor hoverBgColor;            //悬停日期背景颜色
 
-    SQLiteStorage storage; // SQLiteStorage 的实例
+    // 获取 SQLiteStorage 单例实例
+    SQLiteStorage& getSQLiteStorageInstance() {
+        return SQLiteStorage::getInstance();
+    }
+
+    // 获取 SQLiteStorage 单例实例
+    SQLiteStorage& storage = getSQLiteStorageInstance();
 public:
     bool getSelect()                const;
     bool getShowLunar()             const;
