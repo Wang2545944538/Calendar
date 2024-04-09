@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include<QMessageBox>
+#include <QSystemTrayIcon>
+#include <QMenu>
+
 #include "ui_form.h"
 #include "todoevent.h"
 #include"sqlitestorage.h"
@@ -18,6 +21,8 @@ class Form : public QWidget
 public:
     explicit Form(QWidget *parent = nullptr);
     void populateEventDetails(const TodoEvent &event);
+    void setSelectedDate(const QDate &date);
+
     ~Form();
 
     Ui::Form *ui;
@@ -38,6 +43,8 @@ private:
     }
     // 获取 SQLiteStorage 单例实例
     SQLiteStorage& storage = getSQLiteStorageInstance();
+
+    QSystemTrayIcon *trayIcon;
 };
 
 #endif // FORM_H

@@ -133,11 +133,11 @@ void LunarCalendarWidget::initWidget()
     btnEvent->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     btnEvent->setText("新建日程");
 
-    //所有日程
+    //全部日程
     QPushButton *btnAllEvents = new QPushButton;
     btnAllEvents->setObjectName("btnAllEvents");
     btnAllEvents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    btnAllEvents->setText("所有日程");
+    btnAllEvents->setText("全部日程");
 
 //    //上午
 //    QRadioButton *AM_RadioButton = new QRadioButton;
@@ -430,7 +430,6 @@ void LunarCalendarWidget::clicked(const QDate &date, const LunarCalendarItem::Da
     {
         To_do_list *todo_list = new To_do_list();
         todo_list->show();
-        //todo_list->showAllEvents();
         todo_list->showEventsOnDate(date);
     }
 }
@@ -683,6 +682,11 @@ void LunarCalendarWidget::showToday()
 void LunarCalendarWidget::newEvent()
 {
     Form *form=new Form();
+    // 获取日历中选中的日期
+    QDate selectedDate = date;
+    // 将选中日期传递给日程表单
+    form->setSelectedDate(selectedDate);
+
     form->show();
 }
 

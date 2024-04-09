@@ -289,9 +289,7 @@ void LunarCalendarItem::drawEvents(QPainter *painter) {
 }
 
 void LunarCalendarItem::updateEvents() {
-    // 在这里调用 drawEvents 函数
-    QPainter painter(this);
-    drawEvents(&painter);
+    update();
 }
 
 bool LunarCalendarItem::getSelect() const

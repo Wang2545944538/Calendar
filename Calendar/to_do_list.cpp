@@ -7,6 +7,7 @@ To_do_list::To_do_list(QWidget *parent)
     , ui(new Ui::To_do_list)
 {
     ui->setupUi(this);
+    this->setWindowTitle("ToDoList");
 
     ui->tableWidget->verticalHeader()->setVisible(false); //隐藏垂直表头
 
@@ -33,6 +34,8 @@ To_do_list::To_do_list(QWidget *parent)
 
     // 连接表头点击信号到自定义的槽函数
     connect(ui->tableWidget->horizontalHeader(), &QHeaderView::sectionClicked, this, &To_do_list::sortTable);
+
+    setFixedSize(940, 620);
 }
 
 To_do_list::~To_do_list()
@@ -142,6 +145,19 @@ void To_do_list::deleteSelectedRows() {
     // 获取选中的行号
     QModelIndexList selectedIndexes = ui->tableWidget->selectionModel()->selectedRows();
 
+    // 如果没有选中的行，则直接返回
+    if (selectedIndexes.isEmpty()) {
+        return;
+    }
+
+    // 弹出确认对话框
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "删除确认", "确定要删除选中的事件吗？",
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::No) {
+        return;
+    }
+
     // 创建一个 QVector 用于存储选中行的事件ID
     QVector<int> selectedEventIDs;
 
@@ -169,11 +185,12 @@ void To_do_list::deleteSelectedRows() {
         ui->tableWidget->removeRow(row);
     }
 
-    showAllEvents();
-
     // 更新日历事件
     LunarCalendarWidget lunarCalendarWidget;
     lunarCalendarWidget.updateCalendarEvents();
+
+    // 关闭当前窗口
+    this->close();
 }
 
 void To_do_list::on_Deleteitem_clicked()
@@ -192,33 +209,39 @@ void To_do_list::on_changeEvent_clicked()
         return;
     }
 
-    // 遍历选中的行
-    foreach (const QModelIndex &index, selectedIndexes) {
-        int row = index.row();
-
-        // 获取事件ID
-        QTableWidgetItem *idItem = ui->tableWidget->item(row, 0);
-        int id = idItem->text().toInt(); // 假设ID是整数
-
-        // 从数据库中获取该ID对应的事件信息
-        TodoEvent event = storage.getEvent(id);
-
-        // 创建一个新的表单用于修改事件信息
-        Form *form = new Form();
-        // 将事件信息填充到表单中
-        form->populateEventDetails(event);
-        form->show();
-
-        // 从数据库中删除选中的事件
-        storage.deleteEvent(id);
-
-        // 从表格中删除选中的行
-        ui->tableWidget->removeRow(row);
+    // 如果选中多个事件，提示只能修改一个事件
+    if (selectedIndexes.size() > 1) {
+        QMessageBox::warning(this, tr("警告"), tr("只能修改一个事件，请取消多余的选择。"), QMessageBox::Ok);
+        return;
     }
+
+    // 获取选中的行号
+    QModelIndex selectedIndex = selectedIndexes.at(0);
+    int row = selectedIndex.row();
+
+    // 获取事件ID
+    QTableWidgetItem *idItem = ui->tableWidget->item(row, 0);
+    int id = idItem->text().toInt(); // 假设ID是整数
+
+    // 从数据库中获取该ID对应的事件信息
+    TodoEvent event = storage.getEvent(id);
+
+    // 创建一个新的表单用于修改事件信息
+    Form *form = new Form();
+    // 将事件信息填充到表单中
+    form->populateEventDetails(event);
+    form->show();
+
+    // 从数据库中删除选中的事件
+    storage.deleteEvent(id);
+
+    // 从表格中删除选中的行
+    ui->tableWidget->removeRow(row);
 
     // 关闭当前窗口
     this->close();
 }
+
 
 enum Priority {
     High,

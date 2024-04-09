@@ -3,6 +3,7 @@
 #include"lunarcalendarwidget.h"
 
 #include<QCloseEvent>
+#include<QTimer>
 
 Form::Form(QWidget *parent)
     : QWidget(parent)
@@ -21,12 +22,19 @@ Form::Form(QWidget *parent)
     ui->SdateEdit->setDateTime(currentDateTime);
     ui->EdateEdit->setDateTime(currentDateTime);
 
+    // 设置startTimeEdit和endTimeEdit的默认时间为8点和18点
+    QTime defaultStartTime(8, 0); // 默认开始时间为8点
+    QTime defaultEndTime(18, 0); // 默认结束时间为18点
+    ui->startTimeEdit->setTime(defaultStartTime);
+    ui->endTimeEdit->setTime(defaultEndTime);
+
     ui->startTimeEdit->setEnabled(false);
     ui->endTimeEdit->setEnabled(false);
 
     // 连接checkBox的stateChanged信号到槽函数
     connect(ui->checkBox, SIGNAL(stateChanged(int)), this, SLOT(on_checkBox_stateChanged(int)));
 
+    setFixedSize(690,450);
 }
 
 Form::~Form()
@@ -82,12 +90,12 @@ void Form::on_save_clicked()
     }
 
     // 创建一个 TodoEvent 对象
-    TodoEvent event(name, startTime, endTime, location, details ,priority);
+   TodoEvent event(name, startTime, endTime, location, details ,priority);
 
     // 将事件存储到数据库中 
     int id = storage.addEvent(event);
     if (id != -1) {
-        qDebug() << "Event added to database with ID:" << id;
+        qDebug() << "Event added to database";
     } else {
         qDebug() << "Error adding event to database";
     }
@@ -157,3 +165,15 @@ void Form::populateEventDetails(const TodoEvent &event)
         ui->endTimeEdit->setTime(event.endTime.time());
     }
 }
+
+void Form::setSelectedDate(const QDate &date)
+{
+    // 将传递进来的日期设置为起止日期的默认值
+    ui->SdateEdit->setDate(date);
+    ui->EdateEdit->setDate(date);
+
+    // 确保时间编辑控件处于禁用状态（如果需要的话）
+    ui->startTimeEdit->setEnabled(false);
+    ui->endTimeEdit->setEnabled(false);
+}
+

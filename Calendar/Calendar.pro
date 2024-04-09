@@ -10,19 +10,25 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    arrangedwnd.cpp \
     form.cpp \
     lunarcalendarinfo.cpp \
     lunarcalendaritem.cpp \
     lunarcalendarwidget.cpp \
     main.cpp \
+    notifymanager.cpp \
+    notifywnd.cpp \
     sqlitestorage.cpp \
     to_do_list.cpp
 
 HEADERS += \
+    arrangedwnd.h \
     form.h \
     lunarcalendarinfo.h \
     lunarcalendaritem.h \
     lunarcalendarwidget.h \
+    notifymanager.h \
+    notifywnd.h \
     sqlitestorage.h \
     to_do_list.h \
     todoevent.h
