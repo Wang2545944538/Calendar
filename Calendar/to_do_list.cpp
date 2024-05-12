@@ -80,7 +80,7 @@ void To_do_list::showAllEvents()
         ui->tableWidget->setItem(row, 5, locationItem);  // 地点
         ui->tableWidget->setItem(row, 6, detailsItem);   // 详情
 
-        sortTableByTime(2); // 按优先级降序排序
+        sortTableByTime(2); // 按时间降序排序
 
         ui->tableWidget->resizeColumnsToContents(); //自动调整列宽
     }
@@ -285,10 +285,15 @@ void To_do_list::sortTableByTime(int Column) {
 
     // 按日期时间排序
     std::sort(rowsData.begin(), rowsData.end(), [Column](const QList<QVariant> &rowData1, const QList<QVariant> &rowData2) {
-        QDateTime dateTime1 = QDateTime::fromString(rowData1.at(Column).toString(), "ddd MMM dd hh:mm:ss yyyy");
-        QDateTime dateTime2 = QDateTime::fromString(rowData2.at(Column).toString(), "ddd MMM dd hh:mm:ss yyyy");
+        QString str1 = rowData1.at(Column).toString();
+        QString str2 = rowData2.at(Column).toString();
+
+        QDateTime dateTime1 = QDateTime::fromString(str1, "ddd MMM d hh:mm:ss yyyy");
+        QDateTime dateTime2 = QDateTime::fromString(str2, "ddd MMM d hh:mm:ss yyyy");
+
         return dateTime1 < dateTime2;
     });
+
 
     // 清空表格内容
     ui->tableWidget->clearContents();
@@ -366,4 +371,62 @@ void To_do_list::sortTable(int index)
         break;
     }
 }
+
+
+void To_do_list::on_search_button_clicked()
+{
+    // 获取搜索框中的文本内容
+    QString searchText = ui->search_edit->text().trimmed(); // 去除首尾空格
+
+    // 如果搜索框内容为空，则直接返回
+    if (searchText.isEmpty()) {
+        return;
+    }
+
+    clearHighlightedText();
+
+    // 定义匹配到的文本的颜色
+    QColor highlightColor(Qt::yellow);
+
+    // 遍历表格中的每一行
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+        // 遍历每一列
+        for (int col = 0; col < ui->tableWidget->columnCount(); ++col) {
+            QTableWidgetItem *item = ui->tableWidget->item(row, col);
+            if (item) {
+                // 获取单元格文本内容进行匹配
+                QString cellText = item->text();
+                // 查找匹配的部分
+                int index = cellText.indexOf(searchText, 0, Qt::CaseInsensitive); // 不区分大小写匹配
+                while (index != -1) {
+                    // 找到匹配内容，将单元格中匹配到的部分标记为黄色
+                    item->setBackground(highlightColor);
+                    // 移动搜索的起始位置到下一个位置
+                    index = cellText.indexOf(searchText, index + searchText.length(), Qt::CaseInsensitive);
+                }
+            }
+        }
+    }
+}
+
+void To_do_list::clearHighlightedText()
+{
+    // 遍历表格中的每一行
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+        // 遍历每一列
+        for (int col = 0; col < ui->tableWidget->columnCount(); ++col) {
+            QTableWidgetItem *item = ui->tableWidget->item(row, col);
+            if (item) {
+                // 恢复单元格文本的默认背景色
+                item->setBackground(QColor(Qt::white));
+            }
+        }
+    }
+}
+
+
+
+
+
+
 

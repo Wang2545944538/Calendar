@@ -1,4 +1,4 @@
-#include "lunarcalendarwidget.h"
+#include"login.h"
 #include "notifymanager.h"
 #include "sqlitestorage.h"
 
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     timer.start(10000); // 10秒
 
     // 创建并显示您的主窗口或其他 UI 元素
-    LunarCalendarWidget l;
+    Login l;
     l.show();
 
     return a.exec();

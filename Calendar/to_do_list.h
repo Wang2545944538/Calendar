@@ -36,6 +36,9 @@ private slots:
 
     void on_changeEvent_clicked();
 
+    void on_search_button_clicked();
+    void clearHighlightedText();
+
 private:
     Ui::To_do_list *ui;
 

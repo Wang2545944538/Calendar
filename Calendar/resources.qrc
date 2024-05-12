@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>resources/font/fontawesome-webfont.ttf</file>
         <file>resources/image/bg_calendar.png</file>
+        <file>resources/image/message.png</file>
+        <file>resources/image/hide.png</file>
+        <file>resources/image/login.png</file>
+        <file>resources/image/name.png</file>
+        <file>resources/image/password.png</file>
     </qresource>
 </RCC>

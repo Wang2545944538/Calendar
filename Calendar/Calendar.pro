@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     arrangedwnd.cpp \
     form.cpp \
+    login.cpp \
     lunarcalendarinfo.cpp \
     lunarcalendaritem.cpp \
     lunarcalendarwidget.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 HEADERS += \
     arrangedwnd.h \
     form.h \
+    login.h \
     lunarcalendarinfo.h \
     lunarcalendaritem.h \
     lunarcalendarwidget.h \
@@ -35,6 +37,7 @@ HEADERS += \
 
 FORMS += \
     form.ui \
+    login.ui \
     to_do_list.ui
 
 # Default rules for deployment.
